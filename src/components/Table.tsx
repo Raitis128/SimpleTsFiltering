@@ -3,6 +3,7 @@ import { data } from "../utils/data";
 import { BiSort } from "react-icons/bi";
 import { AiOutlineDown } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
+import { MdSort } from "react-icons/md";
 
 type Project = {
   client: string;
@@ -18,10 +19,22 @@ type Project = {
 const Table = () => {
   const [projects, setProjects] = useState(data);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof Project;
     order: string;
   } | null>(null);
+
+  const [filters, setFilters] = useState({
+    name: "",
+    country: "",
+    email: "",
+    project: "",
+    progress: "",
+    status: "",
+  });
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   const sortProjects = (key: keyof Project) => {
     const sortedProjects = [...projects];
@@ -44,6 +57,26 @@ const Table = () => {
     sortProjects(key);
     setDropdownVisible(false);
   };
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters({
+      ...filters,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const filteredProjects = projects.filter(
+    (project) =>
+      searchQuery === "" ||
+      (Object.values(project).some((value) =>
+        value.toLowerCase().includes(searchQuery.toLowerCase())
+      ) &&
+        filters.name === "") ||
+      (project.country.toLowerCase().includes(filters.name.toLowerCase()) &&
+        project.email.toLowerCase().includes(filters.email.toLowerCase()) &&
+        project.project.toLowerCase().includes(filters.project.toLowerCase()) &&
+        project.status.toLowerCase().includes(filters.status.toLowerCase()))
+  );
 
   return (
     <div className="p-4 w-[93%] ml-[5rem]">
@@ -76,6 +109,74 @@ const Table = () => {
               >
                 Date
               </button>
+            </div>
+          )}
+        </div>
+
+        <div className="relative ml-4 w-full">
+          <button
+            onClick={() => setFiltersVisible(!filtersVisible)}
+            className="border border-gray-700 flex items-center justify-center text-white p-2 rounded"
+          >
+            <MdSort className="mr-[0.3rem]" /> Filters
+            <AiOutlineDown className="ml-2" />
+          </button>
+          {filtersVisible && (
+            <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg p-4">
+              <div className="mb-2">
+                <label className="black text-white">Filter By Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={filters.name}
+                  onChange={handleFilterChange}
+                  className="bg-gray-900 text-white rounded p-2 w-full mt-1"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="black text-white">Filter By Country:</label>
+                <input
+                  type="text"
+                  name="country"
+                  value={filters.country}
+                  onChange={handleFilterChange}
+                  className="bg-gray-900 text-white rounded p-2 w-full mt-1"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="black text-white">Filter By Email:</label>
+                <input
+                  type="text"
+                  name="email"
+                  value={filters.email}
+                  onChange={handleFilterChange}
+                  className="bg-gray-900 text-white rounded p-2 w-full mt-1"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="black text-white">Filter By Project:</label>
+                <input
+                  type="text"
+                  name="project"
+                  value={filters.project}
+                  onChange={handleFilterChange}
+                  className="bg-gray-900 text-white rounded p-2 w-full mt-1"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="black text-white">Filter By Status:</label>
+                <input
+                  type="text"
+                  name="status"
+                  value={filters.status}
+                  onChange={handleFilterChange}
+                  className="bg-gray-900 text-white rounded p-2 w-full mt-1"
+                />
+              </div>
             </div>
           )}
         </div>
