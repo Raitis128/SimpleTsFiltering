@@ -4,30 +4,81 @@ import { BiSort } from "react-icons/bi";
 import { AiOutlineDown } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 
+type Project = {
+  client: string;
+  country: string;
+  email: string;
+  project: string;
+  progress: string;
+  status: string;
+  date: string;
+  image: string;
+};
+
 const Table = () => {
   const [projects, setProjects] = useState(data);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Project;
+    order: string;
+  } | null>(null);
+
+  const sortProjects = (key: keyof Project) => {
+    const sortedProjects = [...projects];
+
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.order === "ascending"
+    ) {
+      sortedProjects.sort((a, b) => (a[key] > b[key] ? -1 : 1));
+      setSortConfig({ key, order: "descending" });
+    } else {
+      sortedProjects.sort((a, b) => (a[key] > b[key] ? 1 : -1));
+      setSortConfig({ key, order: "ascending" });
+    }
+    setProjects(sortedProjects);
+  };
+
+  const handleSortOptionClick = (key: keyof Project) => {
+    sortProjects(key);
+    setDropdownVisible(false);
+  };
 
   return (
     <div className="p-4 w-[93%] ml-[5rem]">
       <div className="flex items-center mb-5">
-        <button
-          onClick={() => setDropdownVisible(!dropdownVisible)}
-          className="border border-gray-700 flex items-center text-white p-2 rounded"
-        >
-          <BiSort className="mr-[0.3rem]" /> Sort
-          <AiOutlineDown className="ml-2" />
-        </button>
-        {dropdownVisible && (
-          <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg">
-            <button
-              onClick={() => handleSortOptionClick("click")}
-              className="block px-4 py-2 text-white w-full hover:bg-gray-700"
-            >
-              Name
-            </button>
-          </div>
-        )}
+        <div className="relative">
+          <button
+            onClick={() => setDropdownVisible(!dropdownVisible)}
+            className="border border-gray-700 flex items-center text-white p-2 rounded"
+          >
+            <BiSort className="mr-[0.3rem]" /> Sort
+            <AiOutlineDown className="ml-2" />
+          </button>
+          {dropdownVisible && (
+            <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg">
+              <button
+                onClick={() => handleSortOptionClick("client")}
+                className="block px-4 py-2 text-white w-full hover:bg-gray-700"
+              >
+                Name
+              </button>
+              <button
+                onClick={() => handleSortOptionClick("country")}
+                className="block px-4 py-2 text-white w-full hover:bg-gray-700"
+              >
+                Country
+              </button>
+              <button
+                onClick={() => handleSortOptionClick("date")}
+                className="block px-4 py-2 text-white w-full hover:bg-gray-700"
+              >
+                Date
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <table className="min-w-full table-auto rounded border border-gray-700 text-white">
