@@ -104,18 +104,20 @@ const Table = () => {
   };
 
   return (
-    <div className="p-4 w-[93%] ml-[5rem]">
-      <div className="flex items-center mb-5">
+    <div className="p-4 md:w-[93%] mx-auto">
+      {/* Top Controls */}
+      <div className="flex flex-col md:flex-row md:items-center mb-5 space-y-4 md:space-y-0 mt-12">
+        {/* Sort Button */}
         <div className="relative">
           <button
             onClick={() => setDropdownVisible(!dropdownVisible)}
-            className="border border-gray-700 flex items-center text-white p-2 rounded"
+            className="border border-gray-700 flex justify-center items-center text-white p-2 rounded w-full md:w-auto"
           >
             <BiSort className="mr-[0.3rem]" /> Sort
             <AiOutlineDown className="ml-2" />
           </button>
           {dropdownVisible && (
-            <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg">
+            <div className="absolute top-full left-0 z-50 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg">
               <button
                 onClick={() => handleSortOptionClick("client")}
                 className="block px-4 py-2 text-white w-full hover:bg-gray-700"
@@ -138,10 +140,11 @@ const Table = () => {
           )}
         </div>
 
-        <div className="relative ml-4 w-full">
+        {/* Filter Button */}
+        <div className="relative md:ml-4 w-full">
           <button
             onClick={() => setFiltersVisible(!filtersVisible)}
-            className="border border-gray-700 flex items-center justify-center text-white p-2 rounded"
+            className="border border-gray-700 flex items-center justify-center text-white p-2 rounded w-full md:w-auto"
           >
             <MdSort className="mr-[0.3rem]" /> Filters
             <AiOutlineDown className="ml-2" />
@@ -149,7 +152,7 @@ const Table = () => {
           {filtersVisible && (
             <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg p-4">
               <div className="mb-2">
-                <label className="black text-white">Filter By Name:</label>
+                <label className="text-white">Filter By Name:</label>
                 <input
                   type="text"
                   name="name"
@@ -158,9 +161,8 @@ const Table = () => {
                   className="bg-gray-900 text-white rounded p-2 w-full mt-1"
                 />
               </div>
-
               <div className="mb-2">
-                <label className="black text-white">Filter By Country:</label>
+                <label className="text-white">Filter By Country:</label>
                 <input
                   type="text"
                   name="country"
@@ -169,9 +171,8 @@ const Table = () => {
                   className="bg-gray-900 text-white rounded p-2 w-full mt-1"
                 />
               </div>
-
               <div className="mb-2">
-                <label className="black text-white">Filter By Email:</label>
+                <label className="text-white">Filter By Email:</label>
                 <input
                   type="text"
                   name="email"
@@ -180,9 +181,8 @@ const Table = () => {
                   className="bg-gray-900 text-white rounded p-2 w-full mt-1"
                 />
               </div>
-
               <div className="mb-2">
-                <label className="black text-white">Filter By Project:</label>
+                <label className="text-white">Filter By Project:</label>
                 <input
                   type="text"
                   name="project"
@@ -191,9 +191,8 @@ const Table = () => {
                   className="bg-gray-900 text-white rounded p-2 w-full mt-1"
                 />
               </div>
-
               <div className="mb-2">
-                <label className="black text-white">Filter By Status:</label>
+                <label className="text-white">Filter By Status:</label>
                 <input
                   type="text"
                   name="status"
@@ -207,83 +206,70 @@ const Table = () => {
         </div>
       </div>
 
-      <table className="min-w-full table-auto rounded border border-gray-700 text-white">
-        <thead>
-          <tr>
-            <th className="px-5 py-3 text-left">Image</th>
-            <th className="px-5 py-3 text-left">Name</th>
-            <th className="px-5 py-3 text-left">Country</th>
-            <th className="px-5 py-3 text-left">Email</th>
-            <th className="px-5 py-3 text-left">Project Name</th>
-            <th className="px-5 py-3 text-left">Task Progress</th>
-            <th className="px-5 py-3 text-left">Status</th>
-            <th className="px-5 py-3 text-left">Date</th>
-            <th className="px-5 py-3 text-left">Actions</th>
-          </tr>
-        </thead>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto rounded border border-gray-700 text-white">
+          <thead>
+            <tr>
+              <th className="px-5 py-3 text-left">Image</th>
+              <th className="px-5 py-3 text-left">Name</th>
+              <th className="px-5 py-3 text-left">Country</th>
+              <th className="px-5 py-3 text-left">Email</th>
+              <th className="px-5 py-3 text-left">Project</th>
+              <th className="px-5 py-3 text-left">Task Progress</th>
+              <th className="px-5 py-3 text-left">Status</th>
+              <th className="px-5 py-3 text-left">Date</th>
+              <th className="px-5 py-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentProjects.map(
+              (
+                { image, client, country, email, project, status, date },
+                index
+              ) => (
+                <tr className="border border-gray-700" key={index}>
+                  <td className="px-4 py-2">
+                    <img
+                      src={image}
+                      alt={client}
+                      className="w-[3rem] h-[3rem] object-cover rounded-full"
+                    />
+                  </td>
+                  <td className="px-4 py-2">{client}</td>
+                  <td className="px-4 py-2">{country}</td>
+                  <td className="px-4 py-2">{email}</td>
+                  <td className="px-4 py-2">{project}</td>
+                  <td className="px-4 py-2">
+                    <div className="w-24 h-2 bg-gray-800 rounded">
+                      <div className="bg-green-500 h-full rounded" />
+                    </div>
+                  </td>
+                  <td className="px-4 py-2">{status}</td>
+                  <td className="px-4 py-2">{date}</td>
+                  <td className="px-4 py-2">
+                    <BsThreeDots />
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      </div>
 
-        <tbody>
-          {currentProjects.map(
-            (
-              { image, client, country, email, project, status, date },
-              index
-            ) => (
-              <tr className="border border-gray-700" key={index}>
-                <td className="px-4 py-2">
-                  <img
-                    src={image}
-                    alt={client}
-                    className="w-[3rem] h-[3rem] object-cover rounded-full"
-                  />
-                </td>
-                <td className="px-4 py-2">{client}</td>
-                <td className="px-4 py-2">{country}</td>
-                <td className="px-4 py-2">{email}</td>
-                <td className="px-4 py-2">{project}</td>
-
-                <td className="px-4 py-2">
-                  <div className="w-24 h-2 bg-gray-700 rounded">
-                    <div className="h-2 bg-green-500 rounded"></div>
-                  </div>
-                </td>
-
-                <td className="px-4 py-2 w-[10rem]">
-                  <span>{status}</span>
-                </td>
-
-                <td className="px-4 py-2">{date}</td>
-
-                <td className="px-4 py-2">
-                  <div className="relative">
-                    <BsThreeDots className="cursor-pointer" />
-                  </div>
-                </td>
-              </tr>
-            )
-          )}
-        </tbody>
-      </table>
-
-      <div className="flex justify-end mt-4">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-          className="px-4 py-2 bg-gray-700 text-white rounded mr-2 disabled:opacity-50"
-        >
-          Previous
-        </button>
-
-        <span className="px-4 py-2 text-white">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-          className="px-4 py-2 bg-gray-700 text-white rounded mr-2 disabled:opacity-50"
-        >
-          Next
-        </button>
+      {/* Pagination */}
+      <div className="flex justify-between mt-4">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => handlePageChange(i + 1)}
+            className={`px-3 py-1 border rounded ${
+              currentPage === i + 1 ? "bg-gray-800 text-white" : "text-gray-400"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
       </div>
     </div>
   );
