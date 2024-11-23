@@ -65,18 +65,43 @@ const Table = () => {
     });
   };
 
-  const filteredProjects = projects.filter(
-    (project) =>
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearchQuery =
       searchQuery === "" ||
-      (Object.values(project).some((value) =>
+      Object.values(project).some((value) =>
         value.toLowerCase().includes(searchQuery.toLowerCase())
-      ) &&
-        filters.name === "") ||
-      (project.country.toLowerCase().includes(filters.name.toLowerCase()) &&
-        project.email.toLowerCase().includes(filters.email.toLowerCase()) &&
-        project.project.toLowerCase().includes(filters.project.toLowerCase()) &&
-        project.status.toLowerCase().includes(filters.status.toLowerCase()))
+      );
+
+    const matchesFilters =
+      (filters.name === "" ||
+        project.client.toLowerCase().includes(filters.name.toLowerCase())) &&
+      (filters.country === "" ||
+        project.country
+          .toLowerCase()
+          .includes(filters.country.toLowerCase())) &&
+      (filters.email === "" ||
+        project.email.toLowerCase().includes(filters.email.toLowerCase())) &&
+      (filters.project === "" ||
+        project.project
+          .toLowerCase()
+          .includes(filters.project.toLowerCase())) &&
+      (filters.status === "" ||
+        project.status.toLowerCase().includes(filters.status.toLowerCase()));
+
+    return matchesSearchQuery && matchesFilters;
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProjects = filteredProjects.slice(
+    startIndex,
+    startIndex + itemsPerPage
   );
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="p-4 w-[93%] ml-[5rem]">
@@ -198,7 +223,7 @@ const Table = () => {
         </thead>
 
         <tbody>
-          {projects.map(
+          {currentProjects.map(
             (
               { image, client, country, email, project, status, date },
               index
@@ -240,13 +265,23 @@ const Table = () => {
       </table>
 
       <div className="flex justify-end mt-4">
-        <button className="px-4 py-2 bg-gray-700 text-white rounded mr-2 disabled:opacity-50">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
+          className="px-4 py-2 bg-gray-700 text-white rounded mr-2 disabled:opacity-50"
+        >
           Previous
         </button>
 
-        <span className="px-4 py-2 text-white">Page 1 of 4</span>
+        <span className="px-4 py-2 text-white">
+          Page {currentPage} of {totalPages}
+        </span>
 
-        <button className="px-4 py-2 bg-gray-700 text-white rounded mr-2 disabled:opacity-50">
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+          className="px-4 py-2 bg-gray-700 text-white rounded mr-2 disabled:opacity-50"
+        >
           Next
         </button>
       </div>
